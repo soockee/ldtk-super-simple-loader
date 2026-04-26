@@ -515,8 +515,8 @@
 			"maxCount": 0,
 			"limitScope": "PerLevel",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0,
-			"pivotY": 0,
+			"pivotX": 0.5,
+			"pivotY": 0.5,
 			"fieldDefs": []
 		}
 	], "tilesets": [
@@ -643,7 +643,7 @@
 						{
 							"__identifier": "ball",
 							"__grid": [35,20],
-							"__pivot": [0,0],
+							"__pivot": [0.5,0.5],
 							"__tags": ["ball"],
 							"__tile": { "tilesetUid": 10, "x": 0, "y": 0, "w": 32, "h": 32 },
 							"__smartColor": "#FFFFFF",
@@ -3398,7 +3398,7 @@
 						{
 							"__identifier": "ball",
 							"__grid": [37,22],
-							"__pivot": [0,0],
+							"__pivot": [0.5,0.5],
 							"__tags": ["ball"],
 							"__tile": { "tilesetUid": 10, "x": 0, "y": 0, "w": 32, "h": 32 },
 							"__smartColor": "#FFFFFF",

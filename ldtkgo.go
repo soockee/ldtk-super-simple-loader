@@ -34,6 +34,8 @@ type Entity struct {
 	Def          *EntityDef             `json:"-"`            // Entity definition (set via LinkProject)
 	Tileset      *TilesetDef            `json:"-"`            // Resolved tileset (set via LinkProject)
 	Tags         []string               `json:"-"`            // Tags inherited from EntityDef (set via LinkProject)
+	PivotX       float64                `json:"-"`            // Pivot X (0=left, 0.5=center, 1=right), inherited from EntityDef
+	PivotY       float64                `json:"-"`            // Pivot Y (0=top, 0.5=center, 1=bottom), inherited from EntityDef
 	Data         interface{}            `json:"-"`            // User-attached data (not from JSON)
 }
 
@@ -48,8 +50,25 @@ func (e *Entity) ColorRGBA() color.RGBA {
 }
 
 // Pos returns the entity's position as (x, y).
+// This is the pivot point position — e.g. if pivot is (0.5, 0.5), this is the center.
+// Use TopLeft() for the top-left corner regardless of pivot.
 func (e *Entity) Pos() (int, int) {
 	return e.X, e.Y
+}
+
+// TopLeft returns the top-left corner of the entity's bounding box,
+// computed from the pivot point position.
+func (e *Entity) TopLeft() (int, int) {
+	tlx := e.X - int(e.PivotX*float64(e.Width))
+	tly := e.Y - int(e.PivotY*float64(e.Height))
+	return tlx, tly
+}
+
+// Center returns the center of the entity's bounding box,
+// computed from the pivot point position.
+func (e *Entity) Center() (int, int) {
+	tlx, tly := e.TopLeft()
+	return tlx + e.Width/2, tly + e.Height/2
 }
 
 // Size returns the entity's dimensions as (width, height).
@@ -57,9 +76,10 @@ func (e *Entity) Size() (int, int) {
 	return e.Width, e.Height
 }
 
-// Rect returns the entity's bounding rectangle.
+// Rect returns the entity's bounding rectangle, accounting for pivot.
 func (e *Entity) Rect() image.Rectangle {
-	return image.Rect(e.X, e.Y, e.X+e.Width, e.Y+e.Height)
+	tlx, tly := e.TopLeft()
+	return image.Rect(tlx, tly, tlx+e.Width, tly+e.Height)
 }
 
 // subImager is implemented by most image types from the standard library.
@@ -179,6 +199,8 @@ func (level *Level) LinkProject(project *Project) {
 			if def := project.EntityDefByID(entity.ID); def != nil {
 				entity.Def = def
 				entity.Tags = def.Tags
+				entity.PivotX = def.PivotX
+				entity.PivotY = def.PivotY
 				if def.TilesetID != nil {
 					entity.Tileset = project.TilesetByUID(*def.TilesetID)
 				}

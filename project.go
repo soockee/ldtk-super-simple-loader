@@ -38,6 +38,8 @@ type EntityDef struct {
 	Height         int       `json:"height"`
 	Color          string    `json:"color"`
 	Tags           []string  `json:"tags"`
+	PivotX         float64   `json:"pivotX"`
+	PivotY         float64   `json:"pivotY"`
 	RenderMode     string    `json:"renderMode"`
 	TilesetID      *int      `json:"tilesetId"`
 	TileRect       *TileRect `json:"tileRect"`
