@@ -1,0 +1,55 @@
+{
+	"identifier": "level_0",
+	"uniqueIdentifer": "e6204c30-21a0-11f1-91de-ddd67a242da3",
+	"x": 0,
+	"y": 0,
+	"width": 1280,
+	"height": 720,
+	"bgColor": "#696A79",
+	"neighbourLevels": [],
+	"customFields" : {},
+	"layers": [
+		"collision_test.png"
+	],
+	"entities": {
+		"player_right": [
+			{
+				"id": "player_right",
+				"iid": "f6111450-21a0-11f1-91de-b57b33ae5f6f",
+				"layer": "entities",
+				"x": 1184,
+				"y": 336,
+				"width": 16,
+				"height": 64,
+				"color": 1578021,
+				"customFields" : {}
+			}
+		],
+		"player_left": [
+			{
+				"id": "player_left",
+				"iid": "fc2af810-21a0-11f1-91de-fdd2ef2c6735",
+				"layer": "entities",
+				"x": 80,
+				"y": 336,
+				"width": 16,
+				"height": 64,
+				"color": 16711748,
+				"customFields" : {}
+			}
+		],
+		"ball": [
+			{
+				"id": "ball",
+				"iid": "22987680-21a0-11f1-91de-ab1d719585e0",
+				"layer": "entities",
+				"x": 560,
+				"y": 320,
+				"width": 32,
+				"height": 32,
+				"color": 16777215,
+				"customFields" : {}
+			}
+		]
+	}
+}
