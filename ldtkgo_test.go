@@ -258,8 +258,10 @@ func TestEntityRect(t *testing.T) {
 	world := loadTestWorld(t)
 	ball := world.Level("level_0").Entity("ball")
 
+	// ball pivot is (0.5, 0.5), size 32×32, position (560, 320).
+	// TopLeft = (560 - 0.5×32, 320 - 0.5×32) = (544, 304).
 	r := ball.Rect()
-	want := image.Rect(560, 320, 592, 352)
+	want := image.Rect(544, 304, 576, 336)
 	if r != want {
 		t.Errorf("Rect = %v, want %v", r, want)
 	}
@@ -294,6 +296,46 @@ func TestEntitySubImageNoLink(t *testing.T) {
 	entity := &Entity{ID: "test"}
 	if entity.SubImage() != nil {
 		t.Error("SubImage on unlinked entity should be nil")
+	}
+}
+
+// =============================================================================
+// EntityDef.SubImage — sprite extraction from definition (no placed instance)
+// =============================================================================
+
+func TestEntityDefSubImage(t *testing.T) {
+	world := loadTestWorld(t)
+
+	// ball def has a tile rect → SubImage returns the sprite
+	ballDef := world.EntityDef("ball")
+	sub := ballDef.SubImage(world.Project)
+	if sub == nil {
+		t.Fatal("ball EntityDef.SubImage() = nil")
+	}
+	if sub.Bounds().Dx() != 32 || sub.Bounds().Dy() != 32 {
+		t.Errorf("ball def SubImage = %dx%d, want 32x32", sub.Bounds().Dx(), sub.Bounds().Dy())
+	}
+}
+
+func TestEntityDefSubImageNoTileRect(t *testing.T) {
+	world := loadTestWorld(t)
+
+	// player def has no tile rect → SubImage returns nil
+	playerDef := world.EntityDef("player_left")
+	if playerDef.SubImage(world.Project) != nil {
+		t.Error("player EntityDef.SubImage() should be nil (no tile rect)")
+	}
+}
+
+func TestEntityDefSubImageNoTilesetLoaded(t *testing.T) {
+	def := &EntityDef{
+		Identifier: "test",
+		TilesetID:  func() *int { v := 99; return &v }(),
+		TileRect:   &TileRect{X: 0, Y: 0, W: 16, H: 16},
+	}
+	project := &Project{tilesetsByUID: map[int]*TilesetDef{}}
+	if def.SubImage(project) != nil {
+		t.Error("SubImage with unknown tileset UID should be nil")
 	}
 }
 

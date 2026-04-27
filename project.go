@@ -46,6 +46,28 @@ type EntityDef struct {
 	TileRenderMode string    `json:"tileRenderMode"`
 }
 
+// SubImage returns the tile sub-image for this entity definition using the
+// tileset images loaded in project. It mirrors Entity.SubImage but operates on
+// the definition rather than a placed instance, making it suitable for
+// definition-only entities (prefabs, templates) that are never placed in a level.
+// Returns nil if the definition has no tile rect, no linked tileset, or the
+// tileset image has not been loaded.
+func (def *EntityDef) SubImage(project *Project) image.Image {
+	if def.TilesetID == nil || def.TileRect == nil {
+		return nil
+	}
+	ts := project.TilesetByUID(*def.TilesetID)
+	if ts == nil || ts.Image == nil {
+		return nil
+	}
+	si, ok := ts.Image.(subImager)
+	if !ok {
+		return nil
+	}
+	tr := def.TileRect
+	return si.SubImage(image.Rect(tr.X, tr.Y, tr.X+tr.W, tr.Y+tr.H))
+}
+
 // LayerDef represents a layer definition from the .ldtk project file.
 type LayerDef struct {
 	Identifier    string         `json:"identifier"`
